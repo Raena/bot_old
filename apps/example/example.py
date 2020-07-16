@@ -25,8 +25,8 @@ class ExampleApplication(Application):
         # получим сессию
         session = ctx['session']
 
-        # получим значения счётчика или, если счётчика ещё нет, то создим его со значением 0
-        count = await session.get_or_set('count', 0)
+        # получим значения счётчика или, если счётчика ещё нет, то создим его со значением 0. Не забываемпривести к инту
+        count = int(await session.get_or_set('count', 0))
 
         # в зависимости от типа события произвидём действия
         if event_type == EventType.MESSAGE_NEW:
@@ -37,6 +37,7 @@ class ExampleApplication(Application):
             print(f'пользователь добавил реакцию')
 
         count += 1
+        await session.set('count', count)
 
         if count > 4:
             print('пользователь совершил 4 действия')

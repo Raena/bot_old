@@ -25,12 +25,10 @@ async def handler(channel_id):
     queue = await ChannelQueue.get(channel_id)
     while True:
         future = asyncio.ensure_future(queue.get())
-        print(queue.qsize())
         try:
             item = await asyncio.wait_for(future, timeout=10, loop=get_loop())
             await item
         except asyncio.TimeoutError:
-            print('deleted')
             return await ChannelQueue.delete(channel_id)
 
 
