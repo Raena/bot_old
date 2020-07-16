@@ -1,7 +1,7 @@
-from core.redis.conection import ConnectionSupplier
-from common.base.serilizer.serilizer import Serializer
 from common.abs.storage.storage import AbstractDictionary, AbstractMultiDictionary, AbstractList, \
     AbstractMultiList, AbstractStorage
+from common.base.serilizer.serilizer import Serializer
+from core.redis.conection import ConnectionSupplier
 from utils.oop import classproperty
 
 
@@ -355,3 +355,19 @@ class SerializeMultiList(Storage, AbstractMultiList):
     @classmethod
     async def as_list(cls, key):
         return await cls.slice(cls._format_key(key), 0, await cls.len(key))
+
+
+def storage_generator(klass: type):
+    def generator(name: str, serializer=Serializer):
+        try:
+            meta = type('Meta', (object,), {'abstract': False, 'name': name})
+            return type(f'Generated{klass.__name__}', (klass,), {'Meta': meta, 'serializer': serializer})
+        except Exception:
+            raise AttributeError('wrong name')
+    return generator
+
+
+serialize_dictionary = storage_generator(SerializeDictionary)
+serialize_mdictionary = storage_generator(SerializeMultiDictionary)
+serialize_list = storage_generator(SerializeList)
+serialize_mlist = storage_generator(SerializeMultiList)

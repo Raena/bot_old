@@ -1,7 +1,7 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 
-class AbstractModel(ABC):
+class AbstractModel:
 
     @classmethod
     @abstractmethod

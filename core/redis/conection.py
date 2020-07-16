@@ -30,6 +30,7 @@ class ConnectionSupplier:
     _storage = {}
     _redis_pool = None
     _connections = {}
+    _register_counter = 0
 
     @classmethod
     async def clear_all(cls):
@@ -49,6 +50,11 @@ class ConnectionSupplier:
             raise StorageException(f"Storage with name '{name}' is not registered")
         redis_pool = await cls.redis_pool()
         return redis_pool[db]
+
+    @classmethod
+    def registered_name(cls, name):
+        return name in cls._storage.keys()
+
 
     @classproperty
     def storage(cls):
